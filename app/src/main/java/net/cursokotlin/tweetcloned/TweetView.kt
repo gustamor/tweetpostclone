@@ -1,15 +1,14 @@
 package net.cursokotlin.tweetcloned
 
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,15 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
-import kotlin.math.round
-
 
 @Preview()
 @Composable
@@ -34,17 +29,14 @@ fun TweetView() {
     Box(
         Modifier
             .fillMaxSize()
-
     ) {
         Column(Modifier.fillMaxWidth()) {
             Row() {
                 Side()
                 Body()
             }
-
             Divider(Modifier.background(color = Color.White))
         }
-
     }
 }
 
@@ -58,99 +50,75 @@ fun Body() {
         TwHeader()
         TwBody()
         TwFooter()
-
     }
 }
 
 @Composable
 fun TwFooter() {
-    var liked by remember { mutableStateOf(false) }
-    var retwitted by remember { mutableStateOf(false) }
-    var commented by remember { mutableStateOf(false) }
+    val socialIcon: List<SocialIconData> = listOf(
+        SocialIconData(
+            "chat icon",
+            painterResource(id = R.drawable.ic_chat_filled),
+            painterResource(id = R.drawable.ic_chat),
+            Color.Red,
+            Color.Gray
+        ),
 
-    var likes by remember { mutableStateOf(1) }
-    var retwits by remember { mutableStateOf(1) }
-    var comments by remember { mutableStateOf(1) }
+        SocialIconData(
+            "retwitted icon",
+            painterResource(id = R.drawable.ic_rt),
+            painterResource(id = R.drawable.ic_rt),
+            Color.Green,
+            Color.Gray
+        ),
+        SocialIconData(
+            "like icon",
+            painterResource(id = R.drawable.ic_like_filled),
+            painterResource(id = R.drawable.ic_like),
+            Color.Red,
+            Color.Gray
+        ),
+        )
 
     Row(Modifier.fillMaxWidth()) {
-        IconButton(onClick = { commented = !commented }) {
-            var image: Painter;
-            var color: Color;
-            Row() {
-                if (commented) {
-                    image = painterResource(id = R.drawable.ic_chat_filled)
-                    color = Color.Gray
-                    comments = 2
-                } else {
-                    image = painterResource(id = R.drawable.ic_chat)
-                    color = Color.Gray
-                    comments = 1
-                }
-                Icon(image, contentDescription = "chat icon", tint = color)
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = comments.toString(),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
+        socialIcon.map {
+            SocialIcon(socialData = it)
+            Spacer(modifier = Modifier.size(32.dp))
         }
-
-        Spacer(modifier = Modifier.size(32.dp))
-
-        IconButton(onClick = { retwitted = !retwitted }) {
-            var image: Painter;
-            var color: Color;
-            Row() {
-                if (retwitted) {
-                    image = painterResource(id = R.drawable.ic_rt)
-                    color = Color.Green
-                    retwits = 2
-                } else {
-                    image = painterResource(id = R.drawable.ic_rt)
-                    color = Color.Gray
-                    retwits = 1
-                }
-                Icon(image, contentDescription = "retwitted icon", tint = color)
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = retwits.toString(),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-        Spacer(modifier = Modifier.size(32.dp))
-        IconButton(onClick = { liked = !liked }) {
-            var image: Painter;
-            var color: Color;
-            Row() {
-                if (liked) {
-                    image = painterResource(id = R.drawable.ic_like_filled)
-                    color = Color.Red
-                    likes = 2
-                } else {
-                    image = painterResource(id = R.drawable.ic_like)
-                    color = Color.Gray
-                    likes = 1
-                }
-                Icon(image, contentDescription = "like icon", tint = color)
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    text = likes.toString(),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-
-        }
-
-
     }
 }
+
+@Composable
+fun SocialIcon(
+    socialData: SocialIconData
+) {
+    var clicked by rememberSaveable { mutableStateOf(false) }
+    var clicks by rememberSaveable { mutableStateOf(1) }
+    IconButton(onClick = { clicked = !clicked }) {
+        var image: Painter;
+        var color: Color;
+        Row() {
+            if (clicked) {
+                image = socialData.filledImage
+                color = socialData.filledColor
+                clicks = 2
+            } else {
+                image = socialData.unfilledImage
+                color = socialData.unfilledColor
+                clicks = 1
+            }
+            Icon(image, contentDescription = socialData.description, tint = color)
+            Spacer(modifier = Modifier.size(4.dp))
+            Text(
+                text = clicks.toString(),
+                fontSize = 12.sp,
+                color = Color.Gray,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
+    }
+}
+
 
 @Composable
 fun TwBody() {
@@ -159,16 +127,13 @@ fun TwBody() {
         Message()
         Spacer(modifier = Modifier.size(12.dp))
         ImageContent()
-
     }
-
 }
 
 @Composable
 fun ImageContent() {
-
     Image(
-        painter = painterResource(id = R.drawable.profile), contentDescription = "imagen del post",
+        painter = painterResource(id = R.drawable.mensaje), contentDescription = "imagen del post",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .fillMaxWidth()
@@ -176,18 +141,16 @@ fun ImageContent() {
             .clip(RoundedCornerShape(16.dp))
     )
 
-
 }
 
 @Composable
 fun Message() {
     Text(
-        text = "La IA y otras tecnologías avanzadas tienen el potencial de ser extremadamente poderosas y tener un gran impacto en la sociedad, y existe la posibilidad de que si no se utilizan de manera responsable, se puedan causar daños significativos. Por ejemplo, la IA puede ser utilizada para la creación de armas autónomas",
+        text = "Es importante destacar que muchas personas y organizaciones trabajan actualmente para prohibir el desarrollo y uso de armas autónomas. En 2018, la comunidad internacional discutió la creación de una convención internacional que prohíba las armas autónomas, y en 2019, más de 1000 expertos en IA y robótica firmaron una carta abierta instando a la prohibición de estas armas.",
         fontSize = 15.sp,
         textAlign = TextAlign.Left,
         color = Color.White
     )
-
 }
 
 @Composable
@@ -237,7 +200,6 @@ fun TwHeader() {
     }
 
 }
-
 
 @Composable
 fun Side() {
