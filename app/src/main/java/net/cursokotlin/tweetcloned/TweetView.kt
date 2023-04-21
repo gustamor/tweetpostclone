@@ -60,7 +60,7 @@ fun TwFooter() {
             "chat icon",
             painterResource(id = R.drawable.ic_chat_filled),
             painterResource(id = R.drawable.ic_chat),
-            Color.Red,
+            Color.Gray,
             Color.Gray
         ),
 
