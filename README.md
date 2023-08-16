@@ -1,4 +1,4 @@
-# tweetpostclone
+# Tweet Post Clone en Kotlin
 Práctica con Jetpack Compose del curso de [Aris Guimerá](https://github.com/ArisGuimera) en [Appcademy](https://www.appcademy.dev/). El reto es imitar la vista de un tweet.
 
 Me quedó así:
