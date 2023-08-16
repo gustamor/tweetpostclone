@@ -4,6 +4,8 @@
 
 <p>
 <img alt="Static Badge" src="https://img.shields.io/badge/Language-Kotlin-blue">
+<br />
+<img alt="Static Badge" src="https://img.shields.io/badge/Jetpack_Compose-purple">
 </p>
 
 Práctica con Jetpack Compose del curso de [Aris Guimerá](https://github.com/ArisGuimera) en [Appcademy](https://www.appcademy.dev/). El reto es imitar la vista de un tweet.
